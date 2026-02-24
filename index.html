@@ -14,6 +14,7 @@
     <link rel="apple-touch-icon-precomposed" id="appleTouchIconPre" sizes="192x192" href="">
     <script>
     (function() {
+        // Geliştirilmiş profesyonel ikon çizimi
         function drawIcon(size) {
             try {
                 var c = document.createElement('canvas');
@@ -32,32 +33,36 @@
                 ctx.closePath();
                 var grad = ctx.createLinearGradient(0, 0, size, size);
                 grad.addColorStop(0, '#e11d48');
-                grad.addColorStop(1, '#be123c');
+                grad.addColorStop(0.6, '#b91c1c');
                 ctx.fillStyle = grad;
                 ctx.fill();
+                ctx.shadowColor = 'rgba(255,255,255,0.2)';
+                ctx.shadowBlur = size * 0.1;
                 ctx.save();
                 ctx.translate(size * 0.5, size * 0.53);
-                var h = size * 0.36;
+                var h = size * 0.4;
                 ctx.beginPath();
-                ctx.moveTo(0, h * 0.35);
-                ctx.bezierCurveTo(-h * 0.1, h * 0.1, -h * 0.7, -h * 0.4, -h, 0);
-                ctx.bezierCurveTo(-h * 1.35, h * 0.5, 0, h * 1.05, 0, h * 1.05);
-                ctx.bezierCurveTo(0, h * 1.05, h * 1.35, h * 0.5, h, 0);
-                ctx.bezierCurveTo(h * 0.7, -h * 0.4, h * 0.1, h * 0.1, 0, h * 0.35);
+                ctx.moveTo(0, h * 0.3);
+                ctx.bezierCurveTo(-h * 0.15, h * 0.05, -h * 0.8, -h * 0.4, -h, -h * 0.05);
+                ctx.bezierCurveTo(-h * 1.3, h * 0.4, 0, h * 1.0, 0, h * 1.0);
+                ctx.bezierCurveTo(0, h * 1.0, h * 1.3, h * 0.4, h, -h * 0.05);
+                ctx.bezierCurveTo(h * 0.8, -h * 0.4, h * 0.15, h * 0.05, 0, h * 0.3);
                 ctx.closePath();
-                ctx.fillStyle = '#ffffff';
-                ctx.shadowColor = 'rgba(0,0,0,0.25)';
-                ctx.shadowBlur = size * 0.05;
+                var heartGrad = ctx.createLinearGradient(-h*0.5, -h*0.2, h*0.5, h*0.8);
+                heartGrad.addColorStop(0, '#ffffff');
+                heartGrad.addColorStop(0.5, '#ffe0e5');
+                heartGrad.addColorStop(1, '#ffb0b8');
+                ctx.fillStyle = heartGrad;
+                ctx.shadowColor = 'rgba(0,0,0,0.3)';
+                ctx.shadowBlur = size * 0.06;
                 ctx.fill();
                 ctx.restore();
                 return c.toDataURL('image/png');
             } catch(e) { return ''; }
         }
-
         var png192 = drawIcon(192);
         var png512 = drawIcon(512);
         window._pwaIcons = { png192: png192, png512: png512 };
-
         if (png192) {
             var links = document.querySelectorAll('link[rel="apple-touch-icon"], link[rel="apple-touch-icon-precomposed"]');
             for (var i = 0; i < links.length; i++) { links[i].href = png192; }
@@ -315,13 +320,6 @@
             display: block; margin-top: -2px;
         }
         .header-actions { display: flex; align-items: center; gap: 6px; }
-        .hdr-btn {
-            background: var(--surface); border: 1px solid var(--border);
-            color: var(--text2); border-radius: 10px; padding: 7px 10px;
-            cursor: pointer; transition: .2s;
-            font-family: var(--mono); font-size: .7rem; font-weight: 500;
-        }
-        .hdr-btn:hover { border-color: var(--border2); background: var(--surface2); }
         .status-pill {
             display: flex; align-items: center; gap: 5px;
             font-family: var(--mono); font-size: .6rem; font-weight: 500;
@@ -895,13 +893,25 @@
             position: fixed; bottom: calc(var(--nav-h) + 16px); left: 50%;
             transform: translateX(-50%) translateY(90px);
             opacity: 0;
-            background: var(--surface2); color: var(--text);
-            padding: 11px 22px; border-radius: 50px;
-            font-size: .8rem; font-weight: 600; z-index: 9999;
+            background: var(--surface2);
+            color: var(--text);
+            padding: 11px 22px;
+            border-radius: 50px;
+            font-size: .8rem;
+            font-weight: 600;
+            z-index: 9999;
             transition: transform .3s cubic-bezier(.34,1.56,.64,1), opacity .3s ease;
-            white-space: nowrap; border: 1px solid var(--border2);
-            box-shadow: 0 8px 32px rgba(0,0,0,.5); pointer-events: none;
+            white-space: nowrap;
+            border: 1px solid var(--border2);
+            box-shadow: 0 8px 32px rgba(0,0,0,.5);
+            pointer-events: none;
             font-family: var(--mono);
+        }
+        body.light-mode #toast {
+            background: #222; /* Daha koyu arka plan */
+            color: #fff;
+            border-color: #444;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.3);
         }
         #toast.show { transform: translateX(-50%) translateY(0); opacity: 1; }
 
@@ -932,27 +942,19 @@
         }
         .copy-toast-inline.show { opacity: 1; }
 
-        /* ===== YENİ: ACİL ÖZETPİL ===== */
-        .emergency-summary {
-            margin: 14px 16px 0; padding: 14px 16px;
-            background: linear-gradient(135deg, rgba(255,23,68,.06), rgba(0,180,216,.04));
-            border: 1px solid rgba(255,23,68,.15); border-radius: 16px;
-            display: grid;
-            grid-template-columns: 1fr 1px 1fr 1px 1fr;
-            gap: 0 10px; align-items: center;
+        /* ===== HAVA DURUMU ÖZETİ ===== */
+        .weather-summary {
+            margin: 0 16px 12px;
+            padding: 12px;
+            background: var(--surface);
+            border-radius: 16px;
+            border: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            gap: 12px;
         }
-        body.light-mode .emergency-summary {
-            background: linear-gradient(135deg, rgba(255,23,68,.04), rgba(0,180,216,.03));
-        }
-        .esm-item { text-align: center; padding: 2px 0; }
-        .esm-num {
-            font-family: var(--mono); font-weight: 900; font-size: 1.4rem;
-            color: var(--accent); line-height: 1;
-        }
-        .esm-lbl { font-size: .58rem; color: var(--sub); letter-spacing: .8px; margin-top: 3px; text-transform: uppercase; font-family: var(--mono); }
-        .esm-divider { width: 1px; background: var(--border2); height: 36px; justify-self: center; }
 
-        /* ===== HAVA DURUMU STİLLERİ ===== */
+        /* ===== HAVA DURUMU DETAY STİLLERİ ===== */
         .weather-box {
             margin: 0 16px; padding: 16px;
             background: var(--surface); border-radius: 18px;
@@ -999,7 +1001,8 @@
         body.light-mode .weather-alert.rain  { background: rgba(0,130,200,.07); color: #004a6e; }
         body.light-mode .weather-alert.ok    { background: rgba(0,170,90,.07);  color: #005028; }
         .weather-details {
-            display: flex; gap: 6px; flex-wrap: wrap; margin-top: 6px;
+            display: flex; flex-direction: column; /* alt alta */
+            gap: 4px; margin-top: 8px;
         }
         .weather-chip {
             background: var(--surface2); border: 1px solid var(--border);
@@ -1024,61 +1027,62 @@
 
         /* ===== KOMPAKT ACİL ÇANTA ===== */
         .bag-section {
-            margin: 0 16px 16px;
+            margin: 0 16px 12px;
         }
         .bag-progress-bar {
-            display: flex; align-items: center; gap: 10px;
-            padding: 12px 14px; background: var(--surface);
-            border-radius: 14px; border: 1px solid var(--border); margin-bottom: 10px;
+            display: flex; align-items: center; gap: 6px;
+            padding: 6px 10px; background: var(--surface);
+            border-radius: 10px; border: 1px solid var(--border); margin-bottom: 6px;
         }
         .bag-pct-num {
-            font-family: var(--mono); font-size: 1.1rem; font-weight: 900;
-            color: var(--accent); min-width: 42px; text-align: right;
+            font-family: var(--mono); font-size: 0.9rem; font-weight: 900;
+            color: var(--accent); min-width: 32px; text-align: right;
         }
-        .bag-bar { flex: 1; height: 6px; background: var(--surface3); border-radius: 99px; overflow: hidden; }
+        .bag-bar { flex: 1; height: 5px; background: var(--surface3); border-radius: 99px; overflow: hidden; }
         .bag-bar-fill { height: 100%; background: linear-gradient(90deg, var(--accent), var(--orange)); border-radius: 99px; transition: width .3s; }
-        .bag-count-lbl { font-family: var(--mono); font-size: .65rem; color: var(--sub); white-space: nowrap; }
+        .bag-count-lbl { font-family: var(--mono); font-size: .55rem; color: var(--sub); white-space: nowrap; }
 
-        .bag-category { margin-bottom: 8px; }
+        .bag-category { margin-bottom: 4px; }
         .bag-cat-label {
-            font-family: var(--mono); font-size: .58rem; color: var(--sub);
-            letter-spacing: 1.5px; text-transform: uppercase;
-            padding: 0 2px 5px; display: block; font-weight: 500;
+            font-family: var(--mono); font-size: .5rem; color: var(--sub);
+            letter-spacing: 1px; text-transform: uppercase;
+            padding: 0 2px 2px; display: block; font-weight: 500;
         }
         .bag-cat-grid {
-            display: grid; grid-template-columns: 1fr 1fr; gap: 5px;
+            display: grid; grid-template-columns: repeat(5, 1fr); gap: 3px;
         }
         .bag-item {
-            display: flex; align-items: center; gap: 8px;
-            padding: 9px 10px; border-radius: 11px;
+            display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px;
+            padding: 4px; border-radius: 6px;
             background: var(--surface); border: 1px solid var(--border);
             cursor: pointer; transition: border-color .15s, background .15s;
-            user-select: none;
+            user-select: none; min-height: 50px;
         }
-        .bag-item:active { transform: scale(.97); }
+        .bag-item:active { transform: scale(.95); }
         .bag-item.checked {
-            background: rgba(0,230,118,.07); border-color: rgba(0,230,118,.25);
+            background: rgba(0,230,118,.08); border-color: rgba(0,230,118,.25);
         }
         .bag-check {
-            width: 20px; height: 20px; border-radius: 6px; flex-shrink: 0;
+            width: 14px; height: 14px; border-radius: 3px; flex-shrink: 0;
             border: 1.5px solid var(--border2); background: var(--surface2);
             display: flex; align-items: center; justify-content: center;
-            font-size: .75rem; font-weight: 900; color: var(--green);
+            font-size: .6rem; font-weight: 900; color: var(--green);
             transition: background .15s, border-color .15s;
+            order: -1;
         }
         .bag-item.checked .bag-check {
             background: rgba(0,230,118,.15); border-color: var(--green);
         }
-        .bag-icon { font-size: 1rem; flex-shrink: 0; line-height: 1; }
+        .bag-icon { font-size: .85rem; flex-shrink: 0; line-height: 1; }
         .bag-label {
-            font-size: .72rem; font-weight: 600; color: var(--text);
-            line-height: 1.3; flex: 1;
+            font-size: .6rem; font-weight: 600; color: var(--text);
+            line-height: 1.1; text-align: center; word-break: break-word;
         }
         .bag-item.checked .bag-label { color: var(--sub); text-decoration: line-through; }
         .bag-reset-btn {
-            width: 100%; margin-top: 10px; padding: 11px;
-            border-radius: 12px; border: 1px solid var(--border2);
-            background: transparent; color: var(--sub); font-size: .78rem;
+            width: 100%; margin-top: 6px; padding: 6px;
+            border-radius: 8px; border: 1px solid var(--border2);
+            background: transparent; color: var(--sub); font-size: .7rem;
             font-weight: 700; cursor: pointer; transition: color .15s, border-color .15s;
             font-family: 'Sora', sans-serif;
         }
@@ -1135,9 +1139,6 @@
         </div>
     </div>
     <div class="header-actions">
-        <button id="darkModeBtn" class="hdr-btn" onclick="toggleDarkMode()" aria-label="Tema değiştir">🌙</button>
-        <button class="hdr-btn" onclick="openA11y()" aria-label="Erişilebilirlik" style="color:var(--blue);border-color:rgba(0,180,216,.2);">♿</button>
-        <button id="langBtn" class="hdr-btn" onclick="openLangPanel()" aria-label="Dil seçimi" style="color:var(--green);border-color:rgba(0,230,118,.2);">🌐 TR</button>
         <div class="status-pill" aria-live="polite">
             <div class="status-dot" aria-hidden="true"></div>
             <span data-i18n="status">HAZIR</span>
@@ -1154,22 +1155,15 @@
             <div class="section-line"></div>
         </div>
 
-        <!-- Acil Özet Kart -->
-        <div class="emergency-summary" role="region" aria-label="Acil numaralar özeti">
-            <div class="esm-item">
-                <div class="esm-num">112</div>
-                <div class="esm-lbl">AMBULANS</div>
+        <!-- Hava durumu özeti -->
+        <div class="weather-summary" id="weatherSummary">
+            <div style="font-size: 2rem; line-height: 1;" id="weatherSummaryIcon">☀️</div>
+            <div style="flex: 1;">
+                <div style="font-weight: 800; font-size: 1.2rem;" id="weatherSummaryTemp">--°C</div>
+                <div style="font-size: .8rem; color: var(--sub);" id="weatherSummaryDesc">Hava durumu yükleniyor...</div>
+                <div style="font-size: .7rem; color: var(--sub2);" id="weatherSummaryLoc"></div>
             </div>
-            <div class="esm-divider"></div>
-            <div class="esm-item">
-                <div class="esm-num">110</div>
-                <div class="esm-lbl">İTFAİYE</div>
-            </div>
-            <div class="esm-divider"></div>
-            <div class="esm-item">
-                <div class="esm-num">155</div>
-                <div class="esm-lbl">POLİS</div>
-            </div>
+            <button onclick="fetchWeather()" style="background: var(--surface2); border: 1px solid var(--border); color: var(--sub); border-radius: 8px; padding: 6px 10px; font-size: .7rem; cursor: pointer;">↺</button>
         </div>
 
         <div class="emergency-grid">
@@ -1792,7 +1786,7 @@ var TRANSLATIONS = {
         cpr_start: '▶ BAŞLAT', cpr_stop: '⏹ DURDUR', cpr_reset: '↺ SIFIRLA',
         pulse_title: '💗 Nabız Ölçümü', pulse_reset: 'Sıfırla',
         pulse_tap: '👆 DOKUN', pulse_sub: 'Nabzı say',
-        pulse_bpm: 'ATIM/DAK', pulse_taps: 'DOKUNMA', pulse_status: 'DURUM',
+        pulse_bpm: 'ADIM/DAK', pulse_taps: 'DOKUNMA', pulse_status: 'DURUM',
         fa_emergency_title: '🆘 ACİL DURUM', fa_emergency_desc: '112\'yi ara, yanında kal.',
         fa_bleed_title: '✋ KANAMA',       fa_bleed_desc: 'Bezle 10 dk güçlü bas.',
         fa_burn_title: '🔥 YANIK',         fa_burn_desc: 'Soğuk suyla 10–20 dk soğut.',
@@ -2104,15 +2098,19 @@ function hospSetLoading(on) {
         : '<span>📍</span> <span>' + t('hosp_find') + '</span>';
 }
 
-function hospCard(bg, border, icon, name, desc, btnText, btnBg, btnAction) {
-    return '<div style="padding:12px 14px;border-radius:13px;background:' + bg + ';border:1px solid ' + border + ';display:flex;flex-direction:column;gap:9px;">' +
-        '<div style="display:flex;align-items:center;gap:10px;">' +
-        '<span style="font-size:1.5rem;line-height:1;flex-shrink:0">' + icon + '</span>' +
-        '<div><div style="font-weight:800;font-size:.85rem;color:var(--text);margin-bottom:2px">' + name + '</div>' +
-        '<div style="font-size:.7rem;color:var(--sub)">' + desc + '</div></div>' +
-        '</div>' +
-        '<button onclick="' + btnAction + '" style="width:100%;padding:10px;border-radius:9px;border:none;background:' + btnBg + ';color:#fff;font-weight:800;font-size:.82rem;cursor:pointer;letter-spacing:.3px;font-family:Sora,sans-serif">' +
-        btnText + '</button></div>';
+// Ters jeokodlama ile şehir adı al
+function reverseGeocode(lat, lng) {
+    return fetch('https://nominatim.openstreetmap.org/reverse?format=json&lat=' + lat + '&lon=' + lng + '&zoom=10&accept-language=tr', {
+        headers: { 'User-Agent': 'VitaliumPRO/1.0' }
+    })
+    .then(function(r){ return r.json(); })
+    .then(function(data) {
+        if (data && data.address) {
+            return data.address.city || data.address.town || data.address.village || data.address.county || '';
+        }
+        return '';
+    })
+    .catch(function(){ return ''; });
 }
 
 function findHospitals() {
@@ -2122,45 +2120,49 @@ function findHospitals() {
 
     getLocationWithFallback(
         function(loc) {
-            hospSetLoading(false);
-            var lat = parseFloat(loc.latitude);
-            var lng = parseFloat(loc.longitude);
-            if (isNaN(lat) || isNaN(lng)) {
-                if (result) result.innerHTML = '<p style="color:var(--sub);font-size:.82rem;padding:8px 0">⚠️ ' + t('hosp_denied') + '</p>';
-                return;
-            }
-            var info = hospTypeMap[hospType];
-            var searchQ = currentLang === 'en' ? (info.qEn || info.q) : info.q;
-            var mapsUrl = 'https://www.google.com/maps/search/' + encodeURIComponent(searchQ) + '/@' + lat.toFixed(5) + ',' + lng.toFixed(5) + ',15z';
-            var locLabel = loc.city
-                ? (loc.byIP ? '🌐 ' : '📍 ') + escHtml(loc.city)
-                : (loc.byIP ? t('hosp_ip_based') : t('hosp_gps_based'));
+            // Önce şehir adını al (GPS'ten veya IP'den gelebilir)
+            var cityPromise = loc.city ? Promise.resolve(loc.city) : reverseGeocode(loc.latitude, loc.longitude);
+            cityPromise.then(function(cityName) {
+                hospSetLoading(false);
+                var lat = parseFloat(loc.latitude);
+                var lng = parseFloat(loc.longitude);
+                if (isNaN(lat) || isNaN(lng)) {
+                    if (result) result.innerHTML = '<p style="color:var(--sub);font-size:.82rem;padding:8px 0">⚠️ ' + t('hosp_denied') + '</p>';
+                    return;
+                }
+                var info = hospTypeMap[hospType];
+                var searchQ = currentLang === 'en' ? (info.qEn || info.q) : info.q;
+                var mapsUrl = 'https://www.google.com/maps/search/' + encodeURIComponent(searchQ) + '/@' + lat.toFixed(5) + ',' + lng.toFixed(5) + ',15z';
+                var locLabel = cityName
+                    ? (loc.byIP ? '🌐 ' : '📍 ') + escHtml(cityName)
+                    : (loc.byIP ? t('hosp_ip_based') : t('hosp_gps_based'));
 
-            if (result) result.innerHTML =
-                '<div style="display:flex;flex-direction:column;gap:8px;margin-top:4px">' +
-                hospCard(
-                    'var(--green-dim)', 'rgba(0,230,118,.22)',
-                    info.emoji,
-                    info.label + ' — ' + t('hosp_map_label'),
-                    locLabel,
-                    t('hosp_btn_map'), '#166534',
-                    "window.open('" + mapsUrl + "','_blank')"
-                ) +
-                hospCard(
-                    'rgba(255,23,68,.06)', 'rgba(255,23,68,.2)',
-                    '🚑', t('hosp_112_name'), t('hosp_112_desc'),
-                    t('hosp_btn_call'), '#991b1b',
-                    "window.location='tel:112'"
-                ) +
-                hospCard(
-                    'rgba(0,180,216,.06)', 'rgba(0,180,216,.2)',
-                    'ℹ️', t('hosp_182_name'), t('hosp_182_desc'),
-                    t('hosp_btn_182'), '#075985',
-                    "window.location='tel:182'"
-                ) +
-                '</div>';
+                if (result) result.innerHTML =
+                    '<div style="display:flex;flex-direction:column;gap:8px;margin-top:4px">' +
+                    hospCard(
+                        'var(--green-dim)', 'rgba(0,230,118,.22)',
+                        info.emoji,
+                        info.label + ' — ' + t('hosp_map_label'),
+                        locLabel,
+                        t('hosp_btn_map'), '#166534',
+                        "window.open('" + mapsUrl + "','_blank')"
+                    ) +
+                    hospCard(
+                        'rgba(255,23,68,.06)', 'rgba(255,23,68,.2)',
+                        '🚑', t('hosp_112_name'), t('hosp_112_desc'),
+                        t('hosp_btn_call'), '#991b1b',
+                        "window.location='tel:112'"
+                    ) +
+                    hospCard(
+                        'rgba(0,180,216,.06)', 'rgba(0,180,216,.2)',
+                        'ℹ️', t('hosp_182_name'), t('hosp_182_desc'),
+                        t('hosp_btn_182'), '#075985',
+                        "window.location='tel:182'"
+                    ) +
+                    '</div>';
 
-            if (loc.city) showToast('📍 ' + loc.city, 2000);
+                if (cityName) showToast('📍 ' + cityName, 2000);
+            });
         },
         function() {
             hospSetLoading(false);
@@ -2176,8 +2178,19 @@ function findHospitals() {
                 '<a href="tel:112" style="flex:0 0 auto;padding:9px 16px;background:rgba(255,23,68,.08);border:1px solid rgba(255,23,68,.25);border-radius:9px;color:var(--accent);font-weight:700;font-size:.8rem;text-decoration:none">📞 112</a>' +
                 '</div></div>';
         },
-        { timeout: 10000, maximumAge: 60000, enableHighAccuracy: false }
+        { timeout: 10000, maximumAge: 60000, enableHighAccuracy: true } // Doğruluk artırıldı
     );
+}
+
+function hospCard(bg, border, icon, name, desc, btnText, btnBg, btnAction) {
+    return '<div style="padding:12px 14px;border-radius:13px;background:' + bg + ';border:1px solid ' + border + ';display:flex;flex-direction:column;gap:9px;">' +
+        '<div style="display:flex;align-items:center;gap:10px;">' +
+        '<span style="font-size:1.5rem;line-height:1;flex-shrink:0">' + icon + '</span>' +
+        '<div><div style="font-weight:800;font-size:.85rem;color:var(--text);margin-bottom:2px">' + name + '</div>' +
+        '<div style="font-size:.7rem;color:var(--sub)">' + desc + '</div></div>' +
+        '</div>' +
+        '<button onclick="' + btnAction + '" style="width:100%;padding:10px;border-radius:9px;border:none;background:' + btnBg + ';color:#fff;font-weight:800;font-size:.82rem;cursor:pointer;letter-spacing:.3px;font-family:Sora,sans-serif">' +
+        btnText + '</button></div>';
 }
 
 /* ===== VERİ — 22 kart (TR + EN) ===== */
@@ -2592,7 +2605,7 @@ function stopSpeech() {
 var isSpeakingTTS = false;
 function speak(text, btn) {
     if (isSpeakingTTS || (synth && synth.speaking)) { stopSpeech(); return; }
-    if (!btn) { speakWithOptimizedTTS(text); return; }
+    if (!btn) { speakWithOptimizedTTS(text, null); return; }
     currentSpeakBtn = btn;
     if (btn) { btn.innerHTML = '<span>⏹</span> ' + t('modal_stop'); btn.style.background = isDark ? '#1a0305' : '#fff0f2'; btn.style.borderColor = 'rgba(255,23,68,.3)'; btn.style.color = isDark ? '#FF5370' : '#d32f2f'; }
     speakWithOptimizedTTS(text, btn);
@@ -2755,7 +2768,7 @@ function getLocationWithFallback(onSuccess, onFail, opts) {
                     else { if (onFail) onFail(err); }
                 });
             },
-            opts || {timeout: 8000, maximumAge: 300000, enableHighAccuracy: false}
+            opts || {timeout: 8000, maximumAge: 300000, enableHighAccuracy: true}
         );
     } else {
         getLocationByIP(function(loc) {
@@ -2780,7 +2793,7 @@ function requestUserLocation() {
             userLocation = { lat: loc.latitude, lng: loc.longitude };
         },
         function() {},
-        { timeout: 8000, maximumAge: 300000, enableHighAccuracy: false }
+        { timeout: 8000, maximumAge: 300000, enableHighAccuracy: true }
     );
 }
 function checkNearbyDisasters(quakes) {
@@ -2945,8 +2958,8 @@ function startEMSCWebSocket() {
                         (loc.length > 32 ? '<div class="q-loc">' + escHtml(loc) + '</div>' : '');
                     if (list) {
                         list.insertBefore(newRow, list.firstChild);
-                        /* En fazla 5 satır tut */
-                        while (list.children.length > 5) list.removeChild(list.lastChild);
+                        /* En fazla 10 satır tut */
+                        while (list.children.length > 10) list.removeChild(list.lastChild);
                     }
                     _quakeSetUpdateTime('EMSC ⚡');
                 }
@@ -2996,13 +3009,13 @@ async function getQuakes() {
         var dr = afadDateRange();
         var afadUrl = 'https://depremapi.afad.gov.tr/api/v1/event/filter?start=' +
             encodeURIComponent(dr.start) + '&end=' + encodeURIComponent(dr.end) +
-            '&minmag=1.0&orderby=timedesc&limit=5';
+            '&minmag=1.0&orderby=timedesc&limit=5'; // limit 5 yapıldı
         var r = await fetchWithTimeout(afadUrl, 7000);
         if (!r.ok) throw new Error('HTTP ' + r.status);
         var d = await r.json();
         var q = Array.isArray(d) ? d : (Array.isArray(d.result) ? d.result : []);
         if (q.length) {
-            _quakeRenderRows(q.slice(0,5).map(function(x){
+            _quakeRenderRows(q.slice(0,10).map(function(x){
                 var dt = x.date || x.eventDate || '';
                 var tm = dt.includes('T') ? dt.split('T')[1].substring(0,5) : (dt.split(' ')[1]||'').substring(0,5);
                 var loc = x.location || x.province || x.district || '—';
@@ -3022,12 +3035,12 @@ async function getQuakes() {
     /* 2. Kandilli (yedek) */
     if (!ok) {
         try {
-            var r2 = await fetchWithTimeout('https://api.orhanaydogdu.com.tr/deprem/kandilli/live?limit=5', 7000);
+            var r2 = await fetchWithTimeout('https://api.orhanaydogdu.com.tr/deprem/kandilli/live?limit=5', 7000); // limit 5
             if (!r2.ok) throw new Error();
             var d2 = await r2.json();
             var q2 = Array.isArray(d2.result) ? d2.result : (Array.isArray(d2.data) ? d2.data : []);
             if (q2.length) {
-                _quakeRenderRows(q2.slice(0,5).map(function(x){
+                _quakeRenderRows(q2.slice(0,10).map(function(x){
                     var tm = (x.date||x.datetime||'').split(' ')[1] || '';
                     return { mag: parseFloat(x.mag||x.magnitude||0).toFixed(1),
                              loc: x.title||x.location||'—', time: tm };
@@ -3046,11 +3059,11 @@ async function getQuakes() {
     if (!ok) {
         try {
             var r3 = await fetchWithTimeout(
-                'https://earthquake.usgs.gov/fdsnws/event/1/query?format=geojson&minmagnitude=1.5&orderby=time&limit=5&minlatitude=35&maxlatitude=43&minlongitude=25&maxlongitude=45',
+                'https://earthquake.usgs.gov/fdsnws/event/1/query?format=geojson&minmagnitude=1.5&orderby=time&limit=5&minlatitude=35&maxlatitude=43&minlongitude=25&maxlongitude=45', // limit 5
                 8000);
             if (!r3.ok) throw new Error();
             var d3 = await r3.json();
-            var f3 = (d3.features||[]).slice(0,5);
+            var f3 = (d3.features||[]).slice(0,10);
             if (f3.length) {
                 _quakeRenderRows(f3.map(function(x){
                     var p = x.properties||{};
@@ -3083,149 +3096,146 @@ async function getQuakes() {
     }
 })();
 
-/* ===== DÜDÜK (Gerçekçi Düdük Sesi) ===== */
+/* ===== DÜDÜK (Gerçekçi Siren Sesi) ===== */
 function toggleWhistle() {
     var btn = document.getElementById('wBtn');
     var txt = document.getElementById('wTxt');
     if (whistleOn) {
-        /* Durdur */
-        if (whistleCtx) {
-            try {
-                /* Tüm kayıtlı düğümleri kapat */
-                if (whistleCtx._whistleNodes) {
-                    whistleCtx._whistleNodes.forEach(function(n){ try{ n.stop(); n.disconnect(); }catch(_){} });
-                }
-            } catch(e) {}
-        }
-        whistleOn = false;
-        txt.textContent = 'DÜDÜK';
-        btn.style.cssText = '';
+        stopWhistle();
         return;
     }
     try {
         if (!whistleCtx || whistleCtx.state === 'closed') {
             whistleCtx = new (window.AudioContext || window.webkitAudioContext)();
         }
-        function playRealWhistle() {
+        function playProfessionalWhistle() {
             var ctx = whistleCtx;
             var now = ctx.currentTime;
-            var dur = 3.5;
             var nodes = [];
             whistleCtx._whistleNodes = nodes;
-
-            /* === KATMAN 1: Ana düdük tonu (sine, ~3800 Hz) === */
-            var mainOsc = ctx.createOscillator();
-            var mainGain = ctx.createGain();
-            mainOsc.type = 'sine';
-            mainOsc.frequency.setValueAtTime(3820, now);
-            /* Hafif frekans titremesi — gerçek düdük gibi */
-            mainOsc.frequency.linearRampToValueAtTime(3860, now + 0.04);
-            mainOsc.frequency.linearRampToValueAtTime(3800, now + 0.12);
-            mainOsc.frequency.linearRampToValueAtTime(3840, now + 0.3);
-            mainOsc.frequency.linearRampToValueAtTime(3820, now + dur - 0.4);
-            mainOsc.frequency.linearRampToValueAtTime(3750, now + dur - 0.05);
-            /* Zarf: hızlı attack, düz sustain, doğal decay */
-            mainGain.gain.setValueAtTime(0, now);
-            mainGain.gain.linearRampToValueAtTime(0.7, now + 0.04);
-            mainGain.gain.setValueAtTime(0.68, now + 0.1);
-            mainGain.gain.linearRampToValueAtTime(0.65, now + dur - 0.3);
-            mainGain.gain.exponentialRampToValueAtTime(0.001, now + dur);
-            mainOsc.connect(mainGain);
-
-            /* === KATMAN 2: Harmonik (2. harmonik, ince dolgunluk) === */
-            var harmOsc = ctx.createOscillator();
-            var harmGain = ctx.createGain();
-            harmOsc.type = 'sine';
-            harmOsc.frequency.setValueAtTime(7640, now);
-            harmOsc.frequency.linearRampToValueAtTime(7600, now + dur);
-            harmGain.gain.setValueAtTime(0, now);
-            harmGain.gain.linearRampToValueAtTime(0.12, now + 0.06);
-            harmGain.gain.linearRampToValueAtTime(0.10, now + dur - 0.3);
-            harmGain.gain.exponentialRampToValueAtTime(0.001, now + dur);
-            harmOsc.connect(harmGain);
-
-            /* === KATMAN 3: Nefes gürültüsü (beyaz gürültü filtreli) === */
-            var bufSize = ctx.sampleRate * dur;
-            var noiseBuffer = ctx.createBuffer(1, bufSize, ctx.sampleRate);
-            var noiseData = noiseBuffer.getChannelData(0);
-            for (var i = 0; i < bufSize; i++) { noiseData[i] = (Math.random() * 2 - 1); }
-            var noiseSource = ctx.createBufferSource();
-            noiseSource.buffer = noiseBuffer;
-            /* Bant geçiren filtre — sadece düdük frekans bandı */
-            var bpFilter = ctx.createBiquadFilter();
-            bpFilter.type = 'bandpass';
-            bpFilter.frequency.value = 3800;
-            bpFilter.Q.value = 12;
-            var noiseGain = ctx.createGain();
-            noiseGain.gain.setValueAtTime(0, now);
-            noiseGain.gain.linearRampToValueAtTime(0.06, now + 0.03);
-            noiseGain.gain.linearRampToValueAtTime(0.04, now + 0.2);
-            noiseGain.gain.linearRampToValueAtTime(0.05, now + dur - 0.5);
-            noiseGain.gain.exponentialRampToValueAtTime(0.001, now + dur);
-            noiseSource.connect(bpFilter);
-            bpFilter.connect(noiseGain);
-
-            /* === KATMAN 4: Rezonans (hafif vibrato ile gerçekçilik) === */
-            var vibLfo = ctx.createOscillator();
-            var vibGain = ctx.createGain();
-            vibLfo.type = 'sine';
-            vibLfo.frequency.value = 7.5;
-            vibGain.gain.setValueAtTime(0, now);
-            vibGain.gain.linearRampToValueAtTime(18, now + 0.15);
-            vibGain.gain.setValueAtTime(14, now + dur - 0.3);
-            vibGain.gain.linearRampToValueAtTime(0, now + dur);
-            vibLfo.connect(vibGain);
-            vibGain.connect(mainOsc.frequency);
-
-            /* === MASTER GAIN + COMPRESSOR === */
-            var masterGain = ctx.createGain();
-            masterGain.gain.setValueAtTime(1.0, now);
-            var comp = ctx.createDynamicsCompressor();
-            comp.threshold.value = -6;
-            comp.knee.value = 3;
-            comp.ratio.value = 4;
-            comp.attack.value = 0.003;
-            comp.release.value = 0.1;
-
-            mainGain.connect(masterGain);
-            harmGain.connect(masterGain);
-            noiseGain.connect(masterGain);
-            masterGain.connect(comp);
-            comp.connect(ctx.destination);
-
-            /* Başlat */
-            mainOsc.start(now); mainOsc.stop(now + dur);
-            harmOsc.start(now); harmOsc.stop(now + dur);
-            noiseSource.start(now); noiseSource.stop(now + dur);
-            vibLfo.start(now); vibLfo.stop(now + dur);
-
-            nodes.push(mainOsc, harmOsc, noiseSource, vibLfo);
-
+            
+            // Gerçekçi deprem düdüğü: Klasik "parp parp parp" sesi
+            // 4 adet kısa burst (0.4s), 0.15s aralar
+            var burstDuration = 0.4;
+            var gapDuration = 0.15;
+            var burstCount = 4;
+            var totalDuration = (burstDuration + gapDuration) * burstCount - gapDuration;
+            
+            // Ana osilatör - Square wave (keskin, gerçekçi deprem düdüğü)
+            var osc1 = ctx.createOscillator();
+            osc1.type = 'square';        // Square = keskin deprem düdüğü sesi
+            var gain1 = ctx.createGain();
+            gain1.gain.setValueAtTime(0, now);
+            
+            // Burst pattern oluştur
+            for (var b = 0; b < burstCount; b++) {
+                var burstStart = now + b * (burstDuration + gapDuration);
+                var burstEnd = burstStart + burstDuration;
+                var gapStart = burstEnd;
+                
+                // Hızlı fade in (0.02s içinde)
+                gain1.gain.setValueAtTime(0, burstStart);
+                gain1.gain.linearRampToValueAtTime(0.85, burstStart + 0.02);
+                
+                // Burst sırasında sabit frekans (titreme yok, daha keskin)
+                var freq = 4500;  // Yüksek, keskin frekans
+                osc1.frequency.setValueAtTime(freq, burstStart);
+                
+                // Hızlı fade out (0.02s içinde)
+                gain1.gain.setValueAtTime(0.85, burstEnd - 0.02);
+                gain1.gain.linearRampToValueAtTime(0, burstEnd);
+                
+                // Gap sırasında sessiz
+                if (b < burstCount - 1) {
+                    gain1.gain.setValueAtTime(0, gapStart);
+                }
+            }
+            
+            osc1.connect(gain1);
+            gain1.connect(ctx.destination);
+            nodes.push(osc1, gain1);
+            
+            // Üst harmonik - daha keskin ses için
+            var osc2 = ctx.createOscillator();
+            osc2.type = 'square';
+            var gain2 = ctx.createGain();
+            gain2.gain.setValueAtTime(0, now);
+            
+            for (var b = 0; b < burstCount; b++) {
+                var burstStart = now + b * (burstDuration + gapDuration);
+                var burstEnd = burstStart + burstDuration;
+                var gapStart = burstEnd;
+                
+                gain2.gain.setValueAtTime(0, burstStart);
+                gain2.gain.linearRampToValueAtTime(0.35, burstStart + 0.02);
+                
+                // 1.5x harmonik (keskinlik için)
+                osc2.frequency.setValueAtTime(6750, burstStart);
+                
+                gain2.gain.setValueAtTime(0.35, burstEnd - 0.02);
+                gain2.gain.linearRampToValueAtTime(0, burstEnd);
+                
+                if (b < burstCount - 1) {
+                    gain2.gain.setValueAtTime(0, gapStart);
+                }
+            }
+            
+            
+            osc2.connect(gain2);
+            gain2.connect(ctx.destination);
+            nodes.push(osc2, gain2);
+            
+            // Başlat ve durdur
+            osc1.start(now);
+            osc1.stop(now + totalDuration);
+            osc2.start(now);
+            osc2.stop(now + totalDuration);
+            
             whistleOn = true;
             txt.textContent = 'DURDUR';
             btn.style.background = 'white';
             btn.style.color = '#000';
-
-            /* Otomatik sıfırla — 3.5 sn sonra */
-            mainOsc.onended = function() {
-                if (whistleOn) {
-                    whistleOn = false;
-                    txt.textContent = 'DÜDÜK';
-                    btn.style.cssText = '';
+            
+            // Otomatik kapanış
+            var checkInterval = setInterval(function() {
+                if (!whistleOn || (ctx.currentTime >= now + totalDuration)) {
+                    clearInterval(checkInterval);
+                    stopWhistle();
                 }
-            };
+            }, 100);
         }
-
+        
         if (whistleCtx.state === 'suspended') {
-            whistleCtx.resume().then(playRealWhistle).catch(function(e) {
+            whistleCtx.resume().then(playProfessionalWhistle).catch(function(e) {
                 showToast('⚠️ Ses başlatılamadı: ' + e.message);
             });
         } else {
-            playRealWhistle();
+            playProfessionalWhistle();
         }
     } catch(e) {
         showToast('⚠️ Ses hatası: ' + e.message);
     }
+}
+
+function stopWhistle() {
+    var btn = document.getElementById('wBtn');
+    var txt = document.getElementById('wTxt');
+    if (whistleCtx) {
+        try {
+            if (whistleCtx._whistleNodes) {
+                whistleCtx._whistleNodes.forEach(function(n) {
+                    try {
+                        n.stop();
+                        n.disconnect();
+                    } catch(_) {}
+                });
+            }
+            whistleCtx._whistleNodes = [];
+        } catch(e) {}
+    }
+    whistleOn = false;
+    txt.textContent = 'DÜDÜK';
+    btn.style.cssText = '';
 }
 
 /* ===== ACİL DURUM TETİKLEME ===== */
@@ -3235,27 +3245,57 @@ function triggerEmergencyAlert(message, duration) {
             whistleCtx = new (window.AudioContext || window.webkitAudioContext)();
         }
         if (whistleCtx.state === 'suspended') whistleCtx.resume().catch(function(){});
-        var sirenOsc = whistleCtx.createOscillator();
-        var sirenGain = whistleCtx.createGain();
-        sirenOsc.connect(sirenGain);
-        sirenGain.connect(whistleCtx.destination);
-        sirenOsc.type = 'square';
-        var sirenStartTime = whistleCtx.currentTime;
-        var sirenDuration = 3.5;
-        sirenGain.gain.setValueAtTime(0, whistleCtx.currentTime);
-        sirenGain.gain.linearRampToValueAtTime(1.0, whistleCtx.currentTime + 0.1);
-        for (var i = 0; i < 7; i++) {
-            var timeOffset = i * 0.5;
-            if (timeOffset < sirenDuration) {
-                sirenOsc.frequency.linearRampToValueAtTime(3500, sirenStartTime + timeOffset + 0.25);
-                sirenOsc.frequency.linearRampToValueAtTime(2500, sirenStartTime + timeOffset + 0.5);
+        
+        var ctx = whistleCtx;
+        var now = ctx.currentTime;
+        var nodes = [];
+        
+        // Hızlı acil uyarı: 5 adet kısa burst
+        var burstDuration = 0.6;
+        var gapDuration = 0.2;
+        var burstCount = 5;
+        var totalDuration = (burstDuration + gapDuration) * burstCount - gapDuration;
+        
+        var osc = ctx.createOscillator();
+        osc.type = 'sine';
+        var gain = ctx.createGain();
+        gain.gain.setValueAtTime(0, now);
+        
+        for (var b = 0; b < burstCount; b++) {
+            var burstStart = now + b * (burstDuration + gapDuration);
+            var burstEnd = burstStart + burstDuration;
+            var gapStart = burstEnd;
+            
+            gain.gain.setValueAtTime(0.05, burstStart);
+            gain.gain.linearRampToValueAtTime(0.8, burstStart + 0.03);
+            gain.gain.setValueAtTime(0.8, burstEnd - 0.03);
+            gain.gain.linearRampToValueAtTime(0.1, burstEnd);
+            
+            // Yüksek frekans (4200 Hz)
+            if (b === 0) {
+                osc.frequency.setValueAtTime(4200, burstStart);
+            } else {
+                osc.frequency.linearRampToValueAtTime(4200, burstStart);
+            }
+            
+            if (b < burstCount - 1) {
+                gain.gain.setValueAtTime(0, gapStart);
             }
         }
-        sirenOsc.frequency.setValueAtTime(2500, whistleCtx.currentTime);
-        sirenGain.gain.exponentialRampToValueAtTime(0.01, whistleCtx.currentTime + sirenDuration + 0.2);
-        sirenOsc.start();
-        sirenOsc.stop(whistleCtx.currentTime + sirenDuration + 0.2);
-    } catch(_) {}
+        
+        gain.gain.linearRampToValueAtTime(0.01, now + totalDuration);
+        
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+        
+        osc.start(now);
+        osc.stop(now + totalDuration);
+        
+        nodes.push(osc, gain);
+        whistleCtx._whistleNodes = nodes;
+    } catch(e) {
+        console.error('Alert sound error:', e);
+    }
     showBreakingNews(message, duration || 15000, true);
     if (navigator.vibrate) {
         try { navigator.vibrate([500, 300, 500, 200, 500]); } catch(_) {}
@@ -3310,17 +3350,18 @@ function call(number) {
     }
     window.location.href = 'tel:' + number;
 }
-function addContactField() {
+function addContactField(val) {
     var container = document.getElementById('customContacts');
     var div = document.createElement('div');
     div.style.cssText = 'display:flex;gap:8px;align-items:center';
     var input = document.createElement('input');
     input.type = 'text';
-    input.placeholder = 'Ad ve numara (örn: Doktor 5551234567)';
+    input.placeholder = t('contact_input_ph') || 'Ad ve numara (örn: Doktor 5551234567)';
+    input.value = val || '';
     input.style.cssText = 'flex:1;padding:10px;border:1px solid var(--border);border-radius:8px;background:rgba(255,255,255,.05);color:var(--text);font-size:.85rem';
     input.onchange = saveCustomContacts;
     var btn = document.createElement('button');
-    btn.textContent = '✕';
+    btn.textContent = t('contact_delete') || '✕';
     btn.style.cssText = 'width:40px;padding:10px;border:1px solid var(--border);background:none;color:var(--sub);border-radius:8px;cursor:pointer;font-weight:700';
     btn.onclick = function() { div.remove(); saveCustomContacts(); };
     div.appendChild(input);
@@ -3340,9 +3381,7 @@ function loadCustomContacts() {
         var saved = localStorage.getItem('vitalium_custom_contacts');
         if (saved) {
             var contacts = JSON.parse(saved);
-            contacts.forEach(function() { addContactField(); });
-            var inputs = document.querySelectorAll('#customContacts input');
-            inputs.forEach(function(inp, idx) { inp.value = contacts[idx] || ''; });
+            contacts.forEach(function(val) { addContactField(val); });
         }
     } catch(_) {}
 }
@@ -3539,26 +3578,11 @@ function triggerSOS() {
 
 /* ===== ACİL DURUM ÇANTASI ===== */
 var BAG_ITEMS = [
-    {id:'water',    icon:'💧', label:'Su (kişi başı 3 lt/gün, 3 gün)',         cat:'Temel'},
-    {id:'food',     icon:'🥫', label:'Kuru/konserve gıda (3 günlük)',           cat:'Temel'},
-    {id:'torch',    icon:'🔦', label:'El feneri + yedek pil',                   cat:'Temel'},
-    {id:'radio',    icon:'📻', label:'Pilli taşınabilir radyo',                 cat:'Temel'},
-    {id:'whistle',  icon:'📣', label:'Düdük (kurtarma için)',                   cat:'Temel'},
-    {id:'blanket',  icon:'🧣', label:'Termal battaniye / uyku tulumu',          cat:'Temel'},
-    {id:'firstaid', icon:'🩹', label:'İlk yardım seti (bandaj, antiseptik)',    cat:'Sağlık'},
-    {id:'meds',     icon:'💊', label:'Kişisel ilaçlar (7 günlük)',              cat:'Sağlık'},
-    {id:'docs',     icon:'📄', label:'Kimlik, pasaport, önemli belgeler (kopya)',cat:'Belgeler'},
-    {id:'cash',     icon:'💵', label:'Nakit para (ATM çalışmayabilir)',          cat:'Belgeler'},
-    {id:'phone',    icon:'🔋', label:'Powerbank + şarj kablosu',                cat:'İletişim'},
-    {id:'contact',  icon:'📋', label:'Acil kontak listesi (kağıda yazılı)',     cat:'İletişim'},
-    {id:'clothes',  icon:'👕', label:'Yedek giysiler + yağmurluk',             cat:'Giysi'},
-    {id:'shoes',    icon:'👟', label:'Sağlam ayakkabı / bot',                  cat:'Giysi'},
-    {id:'mask',     icon:'😷', label:'N95 maske (yangın/toz için)',             cat:'Sağlık'},
-    {id:'knife',    icon:'🔪', label:'Çakı / çok amaçlı alet',                cat:'Araç'},
-    {id:'rope',     icon:'🪢', label:'Sağlam ip (10 m)',                        cat:'Araç'},
-    {id:'lighter',  icon:'🔥', label:'Çakmak / kibritler (su geçirmez)',        cat:'Araç'},
-    {id:'soap',     icon:'🧼', label:'Küçük sabun + hijyen malzemeleri',        cat:'Hijyen'},
-    {id:'map',      icon:'🗺️', label:'Bölge kağıt haritası (GPS bağımsız)',    cat:'Temel'}
+    {id:'water',    icon:'💧', label:'Su (kişi başı 1-2 lt)',                     cat:'Temel'},
+    {id:'food',     icon:'🥫', label:'Kuru/konserve gıda',                        cat:'Temel'},
+    {id:'firstaid', icon:'🩹', label:'İlk yardım kiti',                           cat:'Sağlık'},
+    {id:'docs',     icon:'📄', label:'Kimlik, belgeler',                          cat:'Belgeler'},
+    {id:'phone',    icon:'🔋', label:'Powerbank + şarj kablosu',                  cat:'İletişim'}
 ];
 var bagChecked = {};
 
@@ -3580,7 +3604,7 @@ function bagRender() {
         if (!cats[item.cat]) cats[item.cat] = [];
         cats[item.cat].push(item);
     });
-    var catOrder = ['Temel', 'Sağlık', 'İletişim', 'Belgeler', 'Giysi', 'Araç', 'Hijyen'];
+    var catOrder = ['Temel', 'Sağlık', 'Belgeler', 'İletişim'];
     var html = '';
     catOrder.forEach(function(cat) {
         if (!cats[cat]) return;
@@ -3641,10 +3665,21 @@ var WMO_DESC = {
     80:'Hafif sağanak',81:'Sağanak',82:'Şiddetli sağanak',
     95:'Fırtına',96:'Dolu',99:'Yoğun dolu'
 };
+
+// Hava durumu verisini al ve tüm hava durumu alanlarını güncelle
 function fetchWeather() {
     var box = document.getElementById('weatherContent');
-    if (!box) return;
-    box.innerHTML = '<span style="font-size:1.2rem">📍</span><span style="color:var(--sub);font-size:.8rem"> Konum alınıyor…</span>';
+    var summary = document.getElementById('weatherSummary');
+    if (!box && !summary) return;
+
+    // Yükleme mesajları
+    if (box) box.innerHTML = '<span style="font-size:1.2rem">📍</span><span style="color:var(--sub);font-size:.8rem"> Konum alınıyor…</span>';
+    if (summary) {
+        document.getElementById('weatherSummaryIcon').textContent = '☀️';
+        document.getElementById('weatherSummaryTemp').textContent = '--°C';
+        document.getElementById('weatherSummaryDesc').textContent = 'Yükleniyor...';
+        document.getElementById('weatherSummaryLoc').textContent = '';
+    }
 
     getLocationWithFallback(
         function(loc) {
@@ -3675,20 +3710,36 @@ function fetchWeather() {
                 if (!cityName && geoData && geoData.address) {
                     cityName = geoData.address.city || geoData.address.town || geoData.address.village || geoData.address.county || '';
                 }
+                if (!cityName) cityName = '📍 ' + lat.toFixed(2) + ', ' + lng.toFixed(2);
                 renderWeather(weatherData, lat, lng, cityName, byIP);
             }).catch(function() {
-                box.innerHTML = '<span style="color:var(--sub);font-size:.8rem">⚠️ Hava verisi alınamadı</span>';
+                if (box) box.innerHTML = '<span style="color:var(--sub);font-size:.8rem">⚠️ Hava verisi alınamadı</span>';
+                if (summary) {
+                    document.getElementById('weatherSummaryDesc').textContent = 'Veri alınamadı';
+                }
             });
         },
         function() {
-            box.innerHTML = '<span style="color:var(--sub);font-size:.8rem">📍 Konum alınamadı — internet bağlantısını kontrol edin</span>';
+            if (box) box.innerHTML = '<span style="color:var(--sub);font-size:.8rem">📍 Konum alınamadı — internet bağlantısını kontrol edin</span>';
+            if (summary) {
+                document.getElementById('weatherSummaryDesc').textContent = 'Konum alınamadı';
+            }
         },
-        {timeout: 8000, maximumAge: 300000, enableHighAccuracy: false}
+        {timeout: 8000, maximumAge: 300000, enableHighAccuracy: true}
     );
 }
+
 function renderWeather(d, lat, lng, cityName, byIP) {
     var box = document.getElementById('weatherContent');
-    if (!box || !d.current) return;
+    var summary = document.getElementById('weatherSummary');
+    if (!box && !summary) return;
+    if (!d || !d.current) {
+        if (box) box.innerHTML = '<span style="color:var(--sub);font-size:.8rem">⚠️ Hava verisi yok</span>';
+        if (summary) {
+            document.getElementById('weatherSummaryDesc').textContent = 'Veri yok';
+        }
+        return;
+    }
     var c = d.current;
     var temp    = Math.round(c.temperature_2m);
     var feels   = Math.round(c.apparent_temperature);
@@ -3710,12 +3761,14 @@ function renderWeather(d, lat, lng, cityName, byIP) {
     var daily = '';
     if (d.daily && d.daily.temperature_2m_max) {
         var days = ['Bugün','Yarın','2 gün'];
-        daily = '<div class="weather-details">' + d.daily.temperature_2m_max.slice(0,3).map(function(mx, i) {
-            var mn = d.daily.temperature_2m_min[i];
-            var dc = d.daily.weathercode[i];
-            var di = WMO_ICONS[dc] || '🌡️';
-            return '<div class="weather-chip">' + di + ' ' + days[i] + ' ' + Math.round(mn) + '–' + Math.round(mx) + '°</div>';
-        }).join('') + '</div>';
+        daily = '<div class="weather-details">' + 
+            d.daily.temperature_2m_max.slice(0,3).map(function(mx, i) {
+                var mn = d.daily.temperature_2m_min[i];
+                var dc = d.daily.weathercode[i];
+                var di = WMO_ICONS[dc] || '🌡️';
+                return '<div class="weather-chip">' + di + ' ' + days[i] + ' ' + Math.round(mn) + '–' + Math.round(mx) + '°</div>';
+            }).join('') + 
+        '</div>';
     }
     var now = new Date().toLocaleTimeString('tr-TR',{hour:'2-digit',minute:'2-digit'});
     var locIcon = byIP ? '🌐' : '📍';
@@ -3723,17 +3776,29 @@ function renderWeather(d, lat, lng, cityName, byIP) {
     var locationLine = cityName
         ? '<div class="weather-loc">' + locIcon + ' ' + escHtml(cityName) + locSuffix + ' · ' + now + '</div>'
         : '<div class="weather-loc">' + locIcon + ' ' + lat + ', ' + lng + locSuffix + ' · ' + now + '</div>';
-    box.innerHTML =
-        '<div class="weather-row">' +
-        '<div class="weather-icon">' + icon + '</div>' +
-        '<div class="weather-info">' +
-        '<div class="weather-val">' + temp + '°C</div>' +
-        '<div class="weather-desc">' + desc + '</div>' +
-        '<div class="weather-loc">Hissedilen: ' + feels + '°C · Rüzgar: ' + wind + ' km/s</div>' +
-        '</div>' +
-        '</div>' +
-        locationLine +
-        alertHTML + daily;
+
+    // Detaylı hava durumu (deprem sekmesi)
+    if (box) {
+        box.innerHTML =
+            '<div class="weather-row">' +
+            '<div class="weather-icon">' + icon + '</div>' +
+            '<div class="weather-info">' +
+            '<div class="weather-val">' + temp + '°C</div>' +
+            '<div class="weather-desc">' + desc + '</div>' +
+            '<div class="weather-loc">Hissedilen: ' + feels + '°C · Rüzgar: ' + wind + ' km/s</div>' +
+            '</div>' +
+            '</div>' +
+            locationLine +
+            alertHTML + daily;
+    }
+
+    // Hava durumu özeti (acil sekmesi)
+    if (summary) {
+        document.getElementById('weatherSummaryIcon').textContent = icon;
+        document.getElementById('weatherSummaryTemp').textContent = temp + '°C';
+        document.getElementById('weatherSummaryDesc').textContent = desc;
+        document.getElementById('weatherSummaryLoc').textContent = cityName;
+    }
 }
 
 /* ===== YENİ: ONLİNE/OFFLİNE ALGILAMA ===== */
@@ -3805,17 +3870,20 @@ var swCode = [
 "  ctx.arcTo(0,size,0,size-r,r);ctx.lineTo(0,r);",
 "  ctx.arcTo(0,0,r,0,r);ctx.closePath();",
 "  var g=ctx.createLinearGradient(0,0,size,size);",
-"  g.addColorStop(0,'#e11d48');g.addColorStop(1,'#be123c');",
+"  g.addColorStop(0,'#e11d48');g.addColorStop(0.6,'#b91c1c');",
 "  ctx.fillStyle=g;ctx.fill();",
 "  ctx.save();ctx.translate(size*0.5,size*0.53);",
-"  var h=size*0.36;",
+"  var h=size*0.4;",
 "  ctx.beginPath();",
-"  ctx.moveTo(0,h*0.35);",
-"  ctx.bezierCurveTo(-h*0.1,h*0.1,-h*0.7,-h*0.4,-h,0);",
-"  ctx.bezierCurveTo(-h*1.35,h*0.5,0,h*1.05,0,h*1.05);",
-"  ctx.bezierCurveTo(0,h*1.05,h*1.35,h*0.5,h,0);",
-"  ctx.bezierCurveTo(h*0.7,-h*0.4,h*0.1,h*0.1,0,h*0.35);",
-"  ctx.closePath();ctx.fillStyle='#fff';ctx.fill();ctx.restore();",
+"  ctx.moveTo(0,h*0.3);",
+"  ctx.bezierCurveTo(-h*0.15,h*0.05,-h*0.8,-h*0.4,-h,-h*0.05);",
+"  ctx.bezierCurveTo(-h*1.3,h*0.4,0,h*1.0,0,h*1.0);",
+"  ctx.bezierCurveTo(0,h*1.0,h*1.3,h*0.4,h,-h*0.05);",
+"  ctx.bezierCurveTo(h*0.8,-h*0.4,h*0.15,h*0.05,0,h*0.3);",
+"  ctx.closePath();",
+"  var g2=ctx.createLinearGradient(-h*0.5,-h*0.2,h*0.5,h*0.8);",
+"  g2.addColorStop(0,'#ffffff');g2.addColorStop(0.5,'#ffe0e5');g2.addColorStop(1,'#ffb0b8');",
+"  ctx.fillStyle=g2;ctx.shadowColor='rgba(0,0,0,0.3)';ctx.shadowBlur=size*0.06;ctx.fill();ctx.restore();",
 "  return c.convertToBlob({type:'image/png'});",
 "}",
 "self.addEventListener('install',function(e){self.skipWaiting();});",
