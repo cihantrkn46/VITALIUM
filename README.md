@@ -1,42 +1,41 @@
-VITALIUM
-VITALIUM, modern web teknolojileri ile geliştirilmiş, kullanıcı deneyimini (UX) odağına alan, yüksek performanslı ve interaktif bir web platformudur. Hem masaüstü hem de mobil cihazlarda kusursuz çalışacak şekilde optimize edilmiştir.
+# VITALIUM PRO 🚑 
+### Profesyonel Acil Sağlık ve Afet Asistanı
 
-📌 Proje Hakkında
-Bu proje, geleneksel ve tekdüze asistan arayüzlerinin dışına çıkarak; dinamik, renkli ve kullanıcıyla yaşayan bir iletişim modeli sunmayı amaçlar. Görsel estetiği işlevsellik ile birleştiren VITALIUM, yapay zeka entegrasyonu ve özgün konuşma motoru ile dikkat çekmektedir.
+VITALIUM, acil durumlarda (deprem, kaza, sağlık sorunları) ihtiyaç duyulabilecek hayati araçları tek bir platformda toplayan, çevrimdışı çalışma desteğine sahip modern bir web uygulamasıdır. 
 
-Temel Özellikler
-Dinamik ve Renkli Arayüz: Modern tasarım trendlerine uygun, canlı ve kullanıcıyı yormayan görsel mimari.
+🔗 **Canlı Uygulama:** [https://cihantrkn46.github.io/VITALIUM/](https://cihantrkn46.github.io/VITALIUM/)
 
-Çoklu Platform Desteği: Masaüstü (PC) ve Mobil Web tarayıcıları için tam duyarlı (responsive) yapı.
+---
 
-Gelişmiş Etkileşim Modeli: Kullanıcı ile akıcı, doğal ve karakteristik bir iletişim kuran akıllı diyalog sistemi.
+## 🌟 Öne Çıkan Özellikler
 
-Yüksek Performans: Düşük sistem kaynağı tüketimi ve hızlı yüklenme süreleri için optimize edilmiş kod yapısı.
+- **🚨 Acil Durum Merkezi:** Tek tuşla SOS sinyali, konum paylaşımı ve dijital düdük (siren) özelliği.
+- **🌍 Deprem Takibi & Bildirimi:** Kandilli Rasathanesi verileriyle anlık deprem takibi ve yüksek şiddetli depremlerde sesli uyarı sistemi.
+- **🩺 AI Sağlık Asistanı:** Semptomlara göre (göğüs ağrısı, yaralanma vb.) anında ilk yardım önerileri sunan akıllı rehber.
+- **🗂️ Tıbbi Kimlik (Medical ID):** Kan grubu, kronik hastalıklar ve alerji gibi bilgilerin acil durum ekipleri için dijital olarak saklanması.
+- **📱 PWA Desteği:** "Ana Ekrana Ekle" özelliği sayesinde bir mobil uygulama gibi çalışır ve internet kesintilerinde dahi (çevrimdışı) erişilebilirdir.
+- **🔋 Eko Mod & Erişilebilirlik:** Pil tasarrufu için özel mod, yüksek kontrast desteği ve sesli komut okuma (TTS).
 
-🛠️ Teknik Altyapı
-VITALIUM projesi geliştirilirken aşağıdaki teknolojiler ve prensipler temel alınmıştır:
+## 🛠️ Teknik Özellikler
 
-Frontend: HTML5, CSS3 ve Modern JavaScript (ES6+).
+- **Dil:** Türkçe (TR) 🇹🇷
+- **Teknolojiler:** HTML5, CSS3 (Modern Grid & Flex), Pure JavaScript (ES6+).
+- **Veri Kaynağı:** Kandilli Rasathanesi API entegrasyonu.
+- **Güvenlik:** Kişisel veriler ve tıbbi notlar sadece kullanıcının cihazında (LocalStorage) saklanır.
+- **Tasarım:** Gece mavisi sağlık teması, dinamik EKG dekorasyonları ve akışkan "Zen" arayüz geçişleri.
 
-Performans: Sistem kaynaklarını (RAM/CPU) minimum seviyede kullanan mimari.
+## 🚀 Kurulum ve Kullanım
 
-Uyumluluk: Brave, Chrome ve Safari başta olmak üzere tüm modern tarayıcılarla %100 uyum.
+Projeyi kendi bilgisayarınızda çalıştırmak veya geliştirmek için:
 
-🚀 Kurulum ve Canlı Önizleme
-Projeyi yerel ortamınızda çalıştırmak veya canlı sürümüne erişmek için aşağıdaki adımları takip edebilirsiniz:
+1. Depoyu klonlayın: `git clone https://github.com/cihantrkn46/VITALIUM.git`
+2. `index.html` dosyasını tarayıcınızda açın.
+3. Mobil cihazınıza yüklemek için Safari (iOS) veya Chrome (Android) üzerinden **"Ana Ekrana Ekle"** seçeneğini kullanın.
 
-Canlı Erişim: cihantrkn46.github.io/VITALIUM/
+## 📄 Yasal Uyarı
 
-Yerel Kurulum:
+VITALIUM PRO, yalnızca bilgilendirme ve asistanlık amacı taşır. Gerçek acil durumlarda vakit kaybetmeden **112 Acil Çağrı Merkezi** ile iletişime geçilmelidir.
 
-Bash
-git clone https://github.com/cihantrkn46/VITALIUM.git
-cd VITALIUM
-# İlgili index.html dosyasını tarayıcınızda açarak projeyi görüntüleyebilirsiniz.
-🤝 Katkıda Bulunma
-Projeye katkı sağlamak isterseniz, lütfen bir Issue oluşturun veya geliştirmelerinizi içeren bir Pull Request gönderin. Tüm geri bildirimler projenin gelişimi için değerlidir.
-
-📄 Lisans
-Bu proje MIT Lisansı altında lisanslanmıştır. Detaylar için LICENSE dosyasına göz atabilirsiniz.
-
-İletişim: Geliştirici ile GitHub profili üzerinden iletişime geçebilirsiniz.
+---
+**MCT Yazılım** tarafından geliştirilmiştir.  
+[Cihan Türkmen - GitHub](https://github.com/cihantrkn46)
