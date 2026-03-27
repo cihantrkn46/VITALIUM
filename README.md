@@ -38,4 +38,4 @@ VITALIUM PRO, yalnızca bilgilendirme ve asistanlık amacı taşır. Gerçek aci
 
 ---
 **MCT Yazılım** tarafından geliştirilmiştir.  
-[Cihan Türkmen - GitHub](https://github.com/cihantrkn46)
+[Mehmet Cihan Türkan - GitHub](https://github.com/cihantrkn46)
